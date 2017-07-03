@@ -47,16 +47,6 @@ def get_overview():
         print "the {} ask is {}".format(count, asks)
         count = count + 1
 
-    count = 0
-    for isFrozen in orderBook["isFrozen"]:
-        print "the {} bid is {}".format(count,isFrozen)
-        count = count + 1
-
-    count = 0
-    for seq in orderBook["seq"]:
-        print "the {} bid is {}".format(count,seq)
-        count = count + 1
-
 
     print "---Earnings/Losses Against Balance--"
     print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
