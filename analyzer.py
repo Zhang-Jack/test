@@ -41,6 +41,9 @@ def get_overview():
 
     chbtc_api1 = chbtc_api('1ec4b319-74fb-4751-bc8f-8cdf92a73a50','61e66f7c-536b-4fd8-b157-731501ff587f')
     chbtc_api1.query_account();
+    chbtc_market = chbtc_api1.query_market();
+    print chbtc_market;
+    """
     etc_buy_orders = chbtc_api1.query_buy_orders("etc_cny");
     print etc_buy_orders;
     etc_sell_orders = chbtc_api1.query_sell_orders("etc_cny");
@@ -51,7 +54,7 @@ def get_overview():
     btc_sell_orders = chbtc_api1.query_sell_orders("btc_cny");
     print btc_sell_orders;
 
-    """
+
     orderBook = return_orderbook_usd_etc()
     for bids in orderBook["bids"]:
         print "the {} bid is {}".format(count, bids)
