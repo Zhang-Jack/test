@@ -101,16 +101,6 @@ class chbtc_api:
             print >>sys.stderr, 'chbtc query_account exception,',ex
             return None
 
-    def query_account(self):
-        try:
-            params = "method=getAccountInfo&accesskey=" + self.mykey
-            path = 'getAccountInfo'
-
-            obj = self.__api_call(path, params)
-            return obj
-        except Exception, ex:
-            print >> sys.stderr, 'chbtc query_account exception,', ex
-            return "error"
 
     def sell_order(self, price, amount):
         try:
