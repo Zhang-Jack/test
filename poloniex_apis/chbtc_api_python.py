@@ -145,16 +145,28 @@ class chbtc_api:
             print >> sys.stderr, 'chbtc cannel_order exception,', ex
             return "error"
 
-    def query_order(self, orderId):
+    def query_buy_orders(self, currency):
         try:
-            params = "method=getOrder&accesskey=" + self.mykey + "&id=" + orderId + "&currency=eth_cny"
-            path = 'getOrder'
+            params = "method=getOrders&accesskey=" + self.mykey + "&tradeType=1&currency="+currency+"&pageIndex=1"
+            path = 'getOrders'
             obj = self.__api_call(path, params)
             return obj
 
         except Exception, ex:
             print >> sys.stderr, 'chbtc query_order exception,', ex
             return "error"
+
+    def query_sell_orders(self, currency):
+        try:
+            params = "method=getOrders&accesskey=" + self.mykey + "&tradeType=0&currency="+currency+"&pageIndex=1"
+            path = 'getOrders'
+            obj = self.__api_call(path, params)
+            return obj
+
+        except Exception, ex:
+            print >> sys.stderr, 'chbtc query_order exception,', ex
+            return "error"
+
 
     def query_market(self):
         try:
