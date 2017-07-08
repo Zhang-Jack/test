@@ -20,6 +20,7 @@ from poloniex_apis.api_models.trade_history import TradeHistory
 from poloniex_apis.public_api import return_usd_btc
 from poloniex_apis.public_api import return_btc_etc
 from poloniex_apis.public_api import return_orderbook_usd_etc
+from poloniex_apis.chbtc_api_python import chbtc_api
 
 def get_overview():
     balances = Balances(trading_api.return_complete_balances())
@@ -38,6 +39,10 @@ def get_overview():
 
     count = 0
 
+    accountInfo = chbtc_api().query_account();
+
+
+    """
     orderBook = return_orderbook_usd_etc()
     for bids in orderBook["bids"]:
         print "the {} bid is {}".format(count, bids)
@@ -46,7 +51,7 @@ def get_overview():
     for asks in orderBook["asks"]:
         print "the {} ask is {}".format(count, asks)
         count = count + 1
-
+    """
 
     print "---Earnings/Losses Against Balance--"
     print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
