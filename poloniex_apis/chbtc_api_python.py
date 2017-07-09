@@ -168,9 +168,9 @@ class chbtc_api:
             return "error"
 
 
-    def query_market(self):
+    def query_market(self, currency):
         try:
-            url = "http://api.chbtc.com/data/v1/ticker?currency=eth_cny"
+            url = "http://api.chbtc.com/data/v1/ticker?currency="+currency
             request = urllib2.Request(url)
             response = urllib2.urlopen(request, timeout=3)
             obj = json.loads(response.read())

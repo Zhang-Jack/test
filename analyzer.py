@@ -41,8 +41,17 @@ def get_overview():
 
     chbtc_api1 = chbtc_api('1ec4b319-74fb-4751-bc8f-8cdf92a73a50','61e66f7c-536b-4fd8-b157-731501ff587f')
     chbtc_api1.query_account();
-    chbtc_market = chbtc_api1.query_market();
-    print chbtc_market;
+    chbtc_etc_market = chbtc_api1.query_market("etc_cny");
+    print chbtc_etc_market;
+    chbtc_etc_price = chbtc_etc_market["last"];
+    print chbtc_etc_price;
+
+    chbtc_btc_market = chbtc_api1.query_market("btc_cny");
+    print chbtc_btc_market;
+    chbtc_btc_price = chbtc_btc_market["last"];
+    print chbtc_btc_price;
+
+
     """
     etc_buy_orders = chbtc_api1.query_buy_orders("etc_cny");
     print etc_buy_orders;
