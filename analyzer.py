@@ -43,14 +43,16 @@ def get_overview():
     chbtc_api1.query_account();
     chbtc_etc_market = chbtc_api1.query_market("etc_cny");
     print chbtc_etc_market;
-    chbtc_etc_price = chbtc_etc_market["last"];
+    chbtc_etc_price = chbtc_etc_market["ticker"]["last"];
     print chbtc_etc_price;
 
     chbtc_btc_market = chbtc_api1.query_market("btc_cny");
     print chbtc_btc_market;
-    chbtc_btc_price = chbtc_btc_market["last"];
+    chbtc_btc_price =chbtc_btc_market["ticker"]["last"];
     print chbtc_btc_price;
-
+    
+    chbtc_btc_etc = float(chbtc_btc_price)/float(chbtc_etc_price);
+    print "CHBTC BTC/ETC ="+str(chbtc_btc_etc);
 
     """
     etc_buy_orders = chbtc_api1.query_buy_orders("etc_cny");
