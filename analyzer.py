@@ -38,21 +38,58 @@ def get_overview():
     btc_etc_price = 1/return_btc_etc()
 
     count = 0
+    last_etc_price = -1;
+    last_btc_price = -1;
+    record = open('log.txt','a');
+    record.write("----------------------\n");
+    record.write(time.ctime()+"\n");
 
-    chbtc_api1 = chbtc_api('1ec4b319-74fb-4751-bc8f-8cdf92a73a50','61e66f7c-536b-4fd8-b157-731501ff587f')
-    chbtc_api1.query_account();
+    chbtc_api1 = chbtc_api('1ec4b319-74fb-4751-bc8f-8cdf92a73a50','61e66f7c-536b-4fd8-b157-731501ff587f');
+    """chbtc_api1.query_account();"""
     chbtc_etc_market = chbtc_api1.query_market("etc_cny");
-    print chbtc_etc_market;
-    chbtc_etc_price = chbtc_etc_market["ticker"]["last"];
-    print chbtc_etc_price;
+    """print chbtc_etc_market;"""
+    if chbtc_etc_market == "error":
+        chbtc_etc_price = last_etc_price;
+    else:
+        chbtc_etc_price = chbtc_etc_market["ticker"]["last"];
+        last_etc_price = chbtc_etc_price;
+
+    """print chbtc_etc_price;"""
 
     chbtc_btc_market = chbtc_api1.query_market("btc_cny");
-    print chbtc_btc_market;
-    chbtc_btc_price =chbtc_btc_market["ticker"]["last"];
-    print chbtc_btc_price;
+    """print chbtc_btc_market;"""
+    if chbtc_btc_market == "error":
+        chbtc_btc_price = last_btc_price;
+    else:
+        chbtc_btc_price =chbtc_btc_market["ticker"]["last"];
+        last_btc_price = chbtc_btc_price;
+    """print chbtc_btc_price;"""
     
+    record.write("BTC price in chbtc ="+ str(chbtc_btc_price)+"\n");
+    record.write("ETC price in chbtc ="+ str(chbtc_etc_price)+"\n");
+    record.write("POLONIEX BTC/ETC ="+str(btc_etc_price)+"\n");
+    print("POLONIEX BTC/ETC ="+str(btc_etc_price));
+
+    OP_count = 0;
     chbtc_btc_etc = float(chbtc_btc_price)/float(chbtc_etc_price);
-    print "CHBTC BTC/ETC ="+str(chbtc_btc_etc);
+    string_chbtc= "CHBTC BTC/ETC ="+str(chbtc_btc_etc);
+    record.write(string_chbtc+"\n");
+    print string_chbtc;
+    if (chbtc_btc_etc > 0):
+        delta = abs(chbtc_btc_etc - btc_etc_price);
+        delta_percent = delta/btc_etc_price*100;
+        print str(delta_percent)+"%";
+        record.write("delta percent ="+str(delta_percent)+"%\n");
+        if delta_percent > 3.0:
+            print "here is a arbitrage opportunity!!!!";
+            OP_count = OP_count + 1;
+            print "we have observed "+str(OP_count)+" times opportunities"
+             
+            record.write("!!!Opportunity!!! ="+str(OP_count)+"!!!!\n");
+    else:
+        count = count + 1;
+        print "connection error count ="+str(count);
+        record.write("error count ="+str(count)+"!!!!\n");
 
     """
     etc_buy_orders = chbtc_api1.query_buy_orders("etc_cny");
@@ -74,7 +111,7 @@ def get_overview():
     for asks in orderBook["asks"]:
         print "the {} ask is {}".format(count, asks)
         count = count + 1
-    """
+    
 
     print "---Earnings/Losses Against Balance--"
     print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
@@ -100,7 +137,7 @@ def get_overview():
     else:
         print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
         print "{}%".format(balance_percentage)
-
+    """
 
 def get_detailed_overview():
     ticker_price = TickerPrice(public_api.return_ticker())
