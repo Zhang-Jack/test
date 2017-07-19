@@ -36,6 +36,31 @@ def return_complete_balances():
     body = _build_body(command="returnCompleteBalances")
     return _call_trading_api(body)
 
+def sell_etc_btc(rate, amount):
+    parameters = {
+        'currencyPair': 'ETC_BTC',
+        'rate':rate,
+        'amount':amount,
+        'nonce': time.time()
+    }
+    body = _build_body(
+        command="sell",
+        parameters=parameters
+    )
+    return _call_trading_api(body)
+
+def buy_etc_btc(rate, amount):
+    parameters = {
+        'currencyPair': 'ETC_BTC',
+        'rate':rate,
+        'amount':amount,
+        'nonce': time.time()
+    }
+    body = _build_body(
+        command="buy",
+        parameters=parameters
+    )
+    return _call_trading_api(body)
 
 def return_deposits_withdrawals():
     parameters = {
@@ -100,6 +125,7 @@ def _call_trading_api(post_body):
         if response_dict["error"] == "Invalid API key/secret pair.":
             raise InvalidKeySecretError
         else:
+            return -1; 
             raise TradingApiError(response_dict["error"])
     return response_dict
 

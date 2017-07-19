@@ -19,6 +19,8 @@ from poloniex_apis.api_models.ticker_price import TickerPrice
 from poloniex_apis.api_models.trade_history import TradeHistory
 from poloniex_apis.public_api import return_usd_btc
 from poloniex_apis.public_api import return_btc_etc
+from poloniex_apis.trading_api import sell_etc_btc
+from poloniex_apis.trading_api import buy_etc_btc
 from poloniex_apis.public_api import return_orderbook_usd_etc
 from poloniex_apis.chbtc_api_python import chbtc_api
 
@@ -47,17 +49,38 @@ def get_overview():
     chbtc_api1 = chbtc_api('1ec4b319-74fb-4751-bc8f-8cdf92a73a50','61e66f7c-536b-4fd8-b157-731501ff587f');
     """chbtc_api1.query_account();"""
     chbtc_etc_market = chbtc_api1.query_market("etc_cny");
-    """print chbtc_etc_market;"""
+    print chbtc_etc_market;
     if chbtc_etc_market == "error":
         chbtc_etc_price = last_etc_price;
     else:
         chbtc_etc_price = chbtc_etc_market["ticker"]["last"];
         last_etc_price = chbtc_etc_price;
 
+    orderBook = return_orderbook_usd_etc()
+    bid_highest = orderBook["bids"][0];
+    bid_price = float(bid_highest[0]);
+    bid_amount = float(bid_highest[1]);
+    ask_lowest = orderBook["asks"][0];
+    ask_price = float(ask_lowest[0]);
+    ask_amount = float(ask_lowest[1]);
+    print "the highest bid price is {}, amount is {} ".format(bid_price, bid_amount);
+    print "the lowest ask price is {}, amount is {}".format(ask_price, ask_amount);
+    record.write("the highest bid price is {}, amount is {} \n ".format(bid_price, bid_amount));
+    record.write("the lowest ask price is {}, amount is {} \n".format(ask_price, ask_amount));
+    """
+    for bids in orderBook["bids"]:
+        print "the {} bid is {}".format(count, bids)
+        count = count + 1
+    count = 0
+    for asks in orderBook["asks"]:
+        print "the {} ask is {}".format(count, asks)
+        count = count + 1
+    """
+
     """print chbtc_etc_price;"""
 
     chbtc_btc_market = chbtc_api1.query_market("btc_cny");
-    """print chbtc_btc_market;"""
+    print chbtc_btc_market;
     if chbtc_btc_market == "error":
         chbtc_btc_price = last_btc_price;
     else:
@@ -75,7 +98,7 @@ def get_overview():
     string_chbtc= "CHBTC BTC/ETC ="+str(chbtc_btc_etc);
     record.write(string_chbtc+"\n");
     print string_chbtc;
-    if (chbtc_btc_etc > 0):
+    if (chbtc_btc_etc > 0) and (btc_etc_price > 0):
         delta = abs(chbtc_btc_etc - btc_etc_price);
         delta_percent = delta/btc_etc_price*100;
         print str(delta_percent)+"%";
@@ -84,7 +107,12 @@ def get_overview():
             print "here is a arbitrage opportunity!!!!";
             OP_count = OP_count + 1;
             print "we have observed "+str(OP_count)+" times opportunities"
-             
+            if chbtc_btc_etc > btc_etc-price: 
+                """we need to sell out btc and buy etc in chbtc 
+                   then sell out etc and buy btc in poloniex """
+                sell_etc_btc(bid_price, max(bid_amount, 1.00));
+                     
+
             record.write("!!!Opportunity!!! ="+str(OP_count)+"!!!!\n");
     else:
         count = count + 1;

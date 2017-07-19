@@ -82,7 +82,7 @@ class chbtc_api:
             params+= '&sign=%s&reqTime=%d'%(sign, reqTime)
             url = 'https://trade.chbtc.com/api/' + path + '?' + params
             request = urllib2.Request(url)
-            response = urllib2.urlopen(request, timeout=2)
+            response = urllib2.urlopen(request, timeout=10)
             doc = json.loads(response.read())
             return doc
         except Exception,ex:
@@ -172,7 +172,7 @@ class chbtc_api:
         try:
             url = "http://api.chbtc.com/data/v1/ticker?currency="+currency
             request = urllib2.Request(url)
-            response = urllib2.urlopen(request, timeout=3)
+            response = urllib2.urlopen(request, timeout=10)
             obj = json.loads(response.read())
             return obj
         except Exception, ex:
@@ -183,7 +183,7 @@ class chbtc_api:
         try:
             url = "http://api.chbtc.com/data/v1/depth?currency=eth_cny&size=5&merge="
             request = urllib2.Request(url)
-            response = urllib2.urlopen(request, timeout=3)
+            response = urllib2.urlopen(request, timeout=10)
             obj = json.loads(response.read())
             return obj
         except Exception, ex:
