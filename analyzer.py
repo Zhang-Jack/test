@@ -25,7 +25,7 @@ from poloniex_apis.public_api import return_orderbook_usd_etc
 from poloniex_apis.chbtc_api_python import chbtc_api
 
 def get_overview():
-    balances = Balances(trading_api.return_complete_balances())
+    """balances = Balances(trading_api.return_complete_balances())
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
     deposits, withdrawals = dw_history.get_dw_history()
     utils.print_dw_history(deposits, withdrawals)
@@ -36,7 +36,7 @@ def get_overview():
     balance_percentage = float("{:.4}".format(current / balance * 100))
     btc_balance_sum = current - balance
     usd_balance_sum = "{:.2f}".format(btc_balance_sum * usd_btc_price)
-
+    """
     btc_etc_price = 1/return_btc_etc()
 
     count = 0
@@ -107,7 +107,7 @@ def get_overview():
             print "here is a arbitrage opportunity!!!!";
             OP_count = OP_count + 1;
             print "we have observed "+str(OP_count)+" times opportunities"
-            if chbtc_btc_etc > btc_etc-price: 
+            if chbtc_btc_etc > btc_etc_price: 
                 """we need to sell out btc and buy etc in chbtc 
                    then sell out etc and buy btc in poloniex """
                 sell_etc_btc(bid_price, max(bid_amount, 1.00));
