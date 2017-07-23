@@ -50,7 +50,7 @@ def get_overview():
     record.write("----------------------\n");
     record.write(time.ctime()+"\n");
 
-    chbtc_api1 = chbtc_api('1ec4b319-74fb-4751-bc8f-8cdf92a73a50','61e66f7c-536b-4fd8-b157-731501ff587f');
+    chbtc_api1 = chbtc_api(get_chbtc_api_key(),  get_chbtc_api_secret());
     """chbtc_api1.query_account();"""
     chbtc_etc_market = chbtc_api1.query_market("etc_cny");
     print chbtc_etc_market;
@@ -209,7 +209,7 @@ def sellCHBTCETC():
         last_etc_price = chbtc_etc_price;
     if chbtc_etc_price > 0:
         """TODO: need to sync amount from different exchanges"""
-        chbtc_api_trading.sell_etc_order(chbtc_etc_price, 1.0);
+        chbtc_api_trading.sell_etc_order(str(chbtc_etc_price), str(1.0));
 
 def buyCHBTCETC():
     chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
@@ -223,7 +223,7 @@ def buyCHBTCETC():
         last_etc_price = chbtc_etc_price;
     if chbtc_etc_price > 0:
         """TODO: need to sync amount from different exchanges"""
-        chbtc_api_trading.buy_etc_order(chbtc_etc_price, 1.0);
+        chbtc_api_trading.buy_etc_order(str(chbtc_etc_price), str(1.0));
 
 def sellCHBTCBTC():
     chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
@@ -237,7 +237,7 @@ def sellCHBTCBTC():
         last_btc_price = chbtc_btc_price;
     if chbtc_btc_price > 0:
         """TODO: need to sync amount from different exchanges"""
-        chbtc_api_trading.sell_btc_order(chbtc_btc_price, 0.01);
+        chbtc_api_trading.sell_btc_order(str(chbtc_btc_price), str(0.01));
 
 def buyCHBTCBTC():
     chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
@@ -251,7 +251,7 @@ def buyCHBTCBTC():
         last_btc_price = chbtc_btc_price;
     if chbtc_btc_price > 0:
         """TODO: need to sync amount from different exchanges"""
-        chbtc_api_trading.buy_btc_order(chbtc_btc_price, 0.01);
+        chbtc_api_trading.buy_btc_order(str(chbtc_btc_price), str(0.01));
 
 
 def get_detailed_overview():

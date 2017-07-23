@@ -41,7 +41,7 @@ def sell_etc_btc(rate, amount):
         'currencyPair': 'ETC_BTC',
         'rate':rate,
         'amount':amount,
-        'nonce': time.time()
+        'nonce': (int)(time.time()*1000)
     }
     body = _build_body(
         command="sell",
@@ -54,7 +54,7 @@ def buy_etc_btc(rate, amount):
         'currencyPair': 'ETC_BTC',
         'rate':rate,
         'amount':amount,
-        'nonce': time.time()
+        'nonce': (int)(time.time()*1000)
     }
     body = _build_body(
         command="buy",

@@ -104,7 +104,7 @@ class chbtc_api:
 
     def sell_etc_order(self, price, amount):
         try:
-            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=0&currency=etc_cny"
+            params = "method=order&accesskey=" + self.mykey + "&price=" + str(price) + "&amount=" + str(amount) + "&tradeType=0&currency=etc_cny"
             path = 'order'
 
             obj = self.__api_call(path, params)
@@ -118,7 +118,7 @@ class chbtc_api:
 
     def sell_btc_order(self, price, amount):
         try:
-            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=0&currency=btc_cny"
+            params = "method=order&accesskey=" + self.mykey + "&price=" + str(price) + "&amount=" + str(amount) + "&tradeType=0&currency=btc_cny"
             path = 'order'
 
             obj = self.__api_call(path, params)
@@ -133,7 +133,7 @@ class chbtc_api:
 
     def buy_etc_order(self, price, amount):
         try:
-            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=1&currency=etc_cny"
+            params = "method=order&accesskey=" + self.mykey + "&price=" + str(price) + "&amount=" + str(amount) + "&tradeType=1&currency=etc_cny"
             path = 'order'
 
             obj = self.__api_call(path, params)
@@ -147,7 +147,7 @@ class chbtc_api:
 
     def buy_btc_order(self, price, amount):
         try:
-            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=1&currency=btc_cny"
+            params = "method=order&accesskey=" + self.mykey + "&price=" + str(price) + "&amount=" + str(amount) + "&tradeType=1&currency=btc_cny"
             path = 'order'
 
             obj = self.__api_call(path, params)
