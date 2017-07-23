@@ -102,9 +102,9 @@ class chbtc_api:
             return None
 
 
-    def sell_order(self, price, amount):
+    def sell_etc_order(self, price, amount):
         try:
-            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=0&currency=eth_cny"
+            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=0&currency=etc_cny"
             path = 'order'
 
             obj = self.__api_call(path, params)
@@ -116,9 +116,24 @@ class chbtc_api:
             print >> sys.stderr, 'chbtc sell_order exception,', ex
             return "error"
 
-    def buy_order(self, price, amount):
+    def sell_btc_order(self, price, amount):
         try:
-            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=1&currency=eth_cny"
+            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=0&currency=btc_cny"
+            path = 'order'
+
+            obj = self.__api_call(path, params)
+            if obj["code"] != 1000:
+                logger.error('sell_order : %s : %s', obj["code"], obj["message"])
+                return "error"
+            return obj
+        except Exception, ex:
+            print >> sys.stderr, 'chbtc sell_order exception,', ex
+            return "error"
+
+
+    def buy_etc_order(self, price, amount):
+        try:
+            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=1&currency=etc_cny"
             path = 'order'
 
             obj = self.__api_call(path, params)
@@ -129,6 +144,21 @@ class chbtc_api:
         except Exception, ex:
             print >> sys.stderr, 'chbtc buy_order exception,', ex
             return "error"
+
+    def buy_btc_order(self, price, amount):
+        try:
+            params = "method=order&accesskey=" + self.mykey + "&price=" + price + "&amount=" + amount + "&tradeType=1&currency=btc_cny"
+            path = 'order'
+
+            obj = self.__api_call(path, params)
+            if obj["code"] != 1000:
+                logger.error('buy_order : %s : %s', obj["code"], obj["message"])
+                return "error"
+            return obj
+        except Exception, ex:
+            print >> sys.stderr, 'chbtc buy_order exception,', ex
+            return "error"
+
 
     def cancel_order(self, orderId):
         try:

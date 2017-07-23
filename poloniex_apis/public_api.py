@@ -20,10 +20,6 @@ def return_btc_etc():
 
 def return_orderbook_usd_etc():
     orderBook = returnOrderBook("BTC_ETC")
-    count = 0
-    for orders in orderBook:
-        print "the {} order is {}".format(count, orders)
-        count = count + 1
     return orderBook
 
 def return_ticker():

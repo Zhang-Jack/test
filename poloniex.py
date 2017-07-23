@@ -25,6 +25,30 @@ def main():
             'function': analyzer.get_change_over_time,
             'help': 'Public function: Returns percent change over a series of time periods for currencies exceeding a volume threshold'
         })
+        ("sellPoloniexETC", {
+            'function': analyzer.sellPoloniexETC,
+            'help': 'Private function: Try to sell ETC and buy BTC in Poloniex'
+        })
+        ("buyPoloniexETC", {
+            'function': analyzer.buyPoloniexETC,
+            'help': 'Private function: Try to buy ETC and sell BTC in Poloniex'
+        })
+        ("sellCHBTCETC", {
+            'function': analyzer.sellCHBTCETC,
+            'help': 'Private function: Try to sell ETC in CHBTC'
+        })
+        ("sellCHBTCBTC", {
+            'function': analyzer.sellCHBTCBTC,
+            'help': 'Private function: Try to sell BTC in CHBTC'
+        })
+        ("buyCHBTCETC", {
+            'function': analyzer.buyCHBTCETC,
+            'help': 'Private function: Try to buy ETC in CHBTC'
+        })
+        ("buyCHBTCBTC", {
+            'function': analyzer.buyCHBTCBTC,
+            'help': 'Private function: Try to buy BTC in CHBTC'
+        })
     ])
 
     parser = argparse.ArgumentParser(

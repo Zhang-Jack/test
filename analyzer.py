@@ -22,7 +22,11 @@ from poloniex_apis.public_api import return_btc_etc
 from poloniex_apis.trading_api import sell_etc_btc
 from poloniex_apis.trading_api import buy_etc_btc
 from poloniex_apis.public_api import return_orderbook_usd_etc
-from poloniex_apis.chbtc_api_python import chbtc_api
+from poloniex_apis.chbtc_api_python import chbtc_api, get_chbtc_api_secret,get_chbtc_api_key
+
+ERROR_COUNT = 0;
+BTC_TRADING_AMOUNT = 0;
+ETC_TRADING_AMOUNT = 0;
 
 def get_overview():
     """balances = Balances(trading_api.return_complete_balances())
@@ -67,15 +71,6 @@ def get_overview():
     print "the lowest ask price is {}, amount is {}".format(ask_price, ask_amount);
     record.write("the highest bid price is {}, amount is {} \n ".format(bid_price, bid_amount));
     record.write("the lowest ask price is {}, amount is {} \n".format(ask_price, ask_amount));
-    """
-    for bids in orderBook["bids"]:
-        print "the {} bid is {}".format(count, bids)
-        count = count + 1
-    count = 0
-    for asks in orderBook["asks"]:
-        print "the {} ask is {}".format(count, asks)
-        count = count + 1
-    """
 
     """print chbtc_etc_price;"""
 
@@ -110,9 +105,31 @@ def get_overview():
             if chbtc_btc_etc > btc_etc_price: 
                 """we need to sell out btc and buy etc in chbtc 
                    then sell out etc and buy btc in poloniex """
-                sell_etc_btc(bid_price, max(bid_amount, 1.00));
-                     
-
+                try:
+                    etc_trading_amount = max(bid_amount, 1.00);
+                    btc_trading_amount = etc_trading_amount/chbtc_btc_etc;
+                    chbtc_api1.buy_etc_order(chbtc_etc_price, etc_trading_amount);
+                    sell_etc_btc(bid_price, etc_trading_amount);
+                    chbtc_api1.sell_btc_order(chbtc_btc_price, btc_trading_amount);
+                    record.write("selling {} etc in {} price in poloniex \n".format(etc_trading_amount, bid_price));
+                    record.write("selling {} btc in {} price in chbtc \n".format(btc_trading_amount, chbtc_btc_price));
+                    record.write("buying {} etc in {} price in chbtc \n".format(etc_trading_amount, chbtc_etc_price));
+                except Exception, ex:
+                        print 'chbtc cannel_order exception,'
+            else:
+                """we need to sell out etc and buy btc in chbtc 
+                    then sell out btc and buy etc in poloniex """
+                try:
+                    etc_trading_amount = max(ask_amount, 1.00);
+                    btc_trading_amount = etc_trading_amount / chbtc_btc_etc;
+                    chbtc_api1.sell_etc_order(chbtc_etc_price, etc_trading_amount);
+                    buy_etc_btc(ask_price, etc_trading_amount);
+                    chbtc_api1.buy_btc_order(chbtc_btc_price, btc_trading_amount);
+                    record.write("buying {} etc in {} price in poloniex \n".format(etc_trading_amount, ask_price));
+                    record.write("buying {} btc in {} price in chbtc \n".format(btc_trading_amount, chbtc_btc_price));
+                    record.write("selling {} etc in {} price in chbtc \n".format(etc_trading_amount, chbtc_etc_price));
+                except Exception, ex:
+                    print 'chbtc cannel_order exception,'
             record.write("!!!Opportunity!!! ="+str(OP_count)+"!!!!\n");
     else:
         count = count + 1;
@@ -166,6 +183,76 @@ def get_overview():
         print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
         print "{}%".format(balance_percentage)
     """
+def sellPoloniexETC():
+    orderBook = return_orderbook_usd_etc()
+    bid_highest_in_sell = orderBook["bids"][0];
+    bid_price_in_sell = float(bid_highest_in_sell[0]);
+    bid_amount_in_sell = float(bid_highest_in_sell[1]);
+    sell_etc_btc(bid_price_in_sell, max(bid_amount_in_sell, 1.00));
+
+def buyPoloniexETC():
+    orderBook = return_orderbook_usd_etc()
+    asks_lowest_in_function = orderBook["asks"][0];
+    ask_price_in_function = float(asks_lowest_in_function[0]);
+    ask_amount_in_function = float(asks_lowest_in_function[1]);
+    buy_etc_btc(ask_price_in_function, max(ask_amount_in_function, 1.00));
+
+def sellCHBTCETC():
+    chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
+    chbtc_etc_market = chbtc_api_trading.query_market("etc_cny");
+    print chbtc_etc_market;
+    last_etc_price = -1;
+    if chbtc_etc_market == "error":
+        chbtc_etc_price = last_etc_price;
+    else:
+        chbtc_etc_price =chbtc_etc_market["ticker"]["last"];
+        last_etc_price = chbtc_etc_price;
+    if chbtc_etc_price > 0:
+        """TODO: need to sync amount from different exchanges"""
+        chbtc_api_trading.sell_etc_order(chbtc_etc_price, 1.0);
+
+def buyCHBTCETC():
+    chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
+    chbtc_etc_market = chbtc_api_trading.query_market("etc_cny");
+    print chbtc_etc_market;
+    last_etc_price = -1;
+    if chbtc_etc_market == "error":
+        chbtc_etc_price = last_etc_price;
+    else:
+        chbtc_etc_price =chbtc_etc_market["ticker"]["last"];
+        last_etc_price = chbtc_etc_price;
+    if chbtc_etc_price > 0:
+        """TODO: need to sync amount from different exchanges"""
+        chbtc_api_trading.buy_etc_order(chbtc_etc_price, 1.0);
+
+def sellCHBTCBTC():
+    chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
+    chbtc_btc_market = chbtc_api_trading.query_market("btc_cny");
+    print chbtc_btc_market;
+    last_btc_price = -1;
+    if chbtc_btc_market == "error":
+        chbtc_btc_price = last_btc_price;
+    else:
+        chbtc_btc_price =chbtc_btc_market["ticker"]["last"];
+        last_btc_price = chbtc_btc_price;
+    if chbtc_btc_price > 0:
+        """TODO: need to sync amount from different exchanges"""
+        chbtc_api_trading.sell_btc_order(chbtc_btc_price, 0.01);
+
+def buyCHBTCBTC():
+    chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
+    chbtc_btc_market = chbtc_api_trading.query_market("btc_cny");
+    print chbtc_btc_market;
+    last_btc_price = -1;
+    if chbtc_btc_market == "error":
+        chbtc_btc_price = last_btc_price;
+    else:
+        chbtc_btc_price =chbtc_btc_market["ticker"]["last"];
+        last_btc_price = chbtc_btc_price;
+    if chbtc_btc_price > 0:
+        """TODO: need to sync amount from different exchanges"""
+        chbtc_api_trading.buy_btc_order(chbtc_btc_price, 0.01);
+
 
 def get_detailed_overview():
     ticker_price = TickerPrice(public_api.return_ticker())
