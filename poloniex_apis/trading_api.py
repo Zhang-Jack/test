@@ -38,10 +38,9 @@ def return_complete_balances():
 
 def sell_etc_btc(rate, amount):
     parameters = {
-        'currencyPair': 'ETC_BTC',
+        'currencyPair': 'BTC_ETC',
         'rate':rate,
         'amount':amount,
-        'nonce': (int)(time.time()*1000)
     }
     body = _build_body(
         command="sell",
@@ -51,10 +50,9 @@ def sell_etc_btc(rate, amount):
 
 def buy_etc_btc(rate, amount):
     parameters = {
-        'currencyPair': 'ETC_BTC',
+        'currencyPair': 'BTC_ETC',
         'rate':rate,
         'amount':amount,
-        'nonce': (int)(time.time()*1000)
     }
     body = _build_body(
         command="buy",
@@ -104,12 +102,14 @@ def _call_trading_api(post_body):
     :raises: InvalidKeySecretError
     :raises: TradingApiError
     """
+    print "api_url = {}".format(api_url);
     request = urllib2.Request(api_url)
     request.add_header("Key", get_api_key())
     request.add_header("Sign", _sign_header(post_body))
     request.add_data(post_body)
     try:
-        response = urllib2.urlopen(request)
+        print "request = {}".format(request);
+        response = urllib2.urlopen(request)        
     except urllib2.HTTPError as err:
         if err.code == 422:
             print "HTTP Error 422. Use a new API key/secret. From the Poloniex API doc:\n" \
@@ -147,4 +147,5 @@ def _build_body(command, parameters=None):
     if parameters is not None:
         for key, value in parameters.iteritems():
             body += "&{}={}".format(key, value)
+    print "body ={}".format(body);
     return body

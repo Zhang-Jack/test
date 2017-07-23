@@ -20,7 +20,7 @@ from poloniex_apis.api_models.trade_history import TradeHistory
 from poloniex_apis.public_api import return_usd_btc
 from poloniex_apis.public_api import return_btc_etc
 from poloniex_apis.trading_api import sell_etc_btc
-from poloniex_apis.trading_api import buy_etc_btc
+from poloniex_apis.trading_api import buy_etc_btc,return_complete_balances
 from poloniex_apis.public_api import return_orderbook_usd_etc
 from poloniex_apis.chbtc_api_python import chbtc_api, get_chbtc_api_secret,get_chbtc_api_key
 
@@ -106,7 +106,7 @@ def get_overview():
                 """we need to sell out btc and buy etc in chbtc 
                    then sell out etc and buy btc in poloniex """
                 try:
-                    etc_trading_amount = max(bid_amount, 1.00);
+                    etc_trading_amount = min(bid_amount, 1.00);
                     btc_trading_amount = etc_trading_amount/chbtc_btc_etc;
                     chbtc_api1.buy_etc_order(chbtc_etc_price, etc_trading_amount);
                     sell_etc_btc(bid_price, etc_trading_amount);
@@ -120,7 +120,7 @@ def get_overview():
                 """we need to sell out etc and buy btc in chbtc 
                     then sell out btc and buy etc in poloniex """
                 try:
-                    etc_trading_amount = max(ask_amount, 1.00);
+                    etc_trading_amount = min(ask_amount, 1.00);
                     btc_trading_amount = etc_trading_amount / chbtc_btc_etc;
                     chbtc_api1.sell_etc_order(chbtc_etc_price, etc_trading_amount);
                     buy_etc_btc(ask_price, etc_trading_amount);
@@ -184,18 +184,20 @@ def get_overview():
         print "{}%".format(balance_percentage)
     """
 def sellPoloniexETC():
-    orderBook = return_orderbook_usd_etc()
+    orderBook = return_orderbook_usd_etc();
     bid_highest_in_sell = orderBook["bids"][0];
     bid_price_in_sell = float(bid_highest_in_sell[0]);
     bid_amount_in_sell = float(bid_highest_in_sell[1]);
-    sell_etc_btc(bid_price_in_sell, max(bid_amount_in_sell, 1.00));
+    sell_etc_btc(bid_price_in_sell, min(bid_amount_in_sell, 1.00));
 
 def buyPoloniexETC():
-    orderBook = return_orderbook_usd_etc()
+    complete_balance= return_complete_balances();
+    print "complete_balance etc = {}".format(complete_balance["ETC"]);
+    orderBook = return_orderbook_usd_etc();
     asks_lowest_in_function = orderBook["asks"][0];
     ask_price_in_function = float(asks_lowest_in_function[0]);
     ask_amount_in_function = float(asks_lowest_in_function[1]);
-    buy_etc_btc(ask_price_in_function, max(ask_amount_in_function, 1.00));
+    buy_etc_btc(ask_price_in_function, min(ask_amount_in_function, 1.00));
 
 def sellCHBTCETC():
     chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
@@ -271,14 +273,16 @@ def get_detailed_overview():
                     # For some reason, the total for sells do not include the
                     # fee so we include it here.
                     btc_sum -= (float(trade["total"]) * (1 - float(trade["fee"])))
-
+            print "btc_sum = {}".format(btc_sum);
             ticker_sum = 0
             for trade in current:
                 if trade['type'] == 'buy':
                     ticker_sum += float(trade["amount"])  # Total
                     ticker_sum -= float(trade["amount"]) * float(trade["fee"])  # Fee
                 else:
-                    ticker_sum -= float(trade["amount"])
+                    ticker_sum -= float(trade["amount"])                
+            print "ticker_sum = {}".format(ticker_sum);
+
             if ticker_sum > -1:  # Set to 0.000001 to hide 0 balances
                 current_btc_sum = float(ticker_price.get_price_for_ticker(ticker)) * ticker_sum
                 total_btc = current_btc_sum - btc_sum

@@ -51,6 +51,7 @@ def returnOrderBook (currencyPair="BTC_ETC", depth=10):
     return _call_public_api(url)
 
 def _call_public_api(url):
+    print "url = {}".format(url);
     request = urllib2.Request(url)
     response = urllib2.urlopen(request)
     json_response = response.read()
