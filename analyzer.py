@@ -12,6 +12,7 @@ from collections import defaultdict
 
 import poloniex_apis.trading_api as trading_api
 import utils
+from decimal import Decimal
 from poloniex_apis import public_api
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
@@ -93,12 +94,12 @@ def get_overview():
     string_chbtc= "CHBTC BTC/ETC ="+str(chbtc_btc_etc);
     record.write(string_chbtc+"\n");
     print string_chbtc;
-    if (chbtc_btc_etc > 0) and (btc_etc_price > 0):
+    if (chbtc_btc_etc > 0) and (btc_etc_price > 0) and (chbtc_btc_price > 0):
         delta = abs(chbtc_btc_etc - btc_etc_price);
         delta_percent = delta/btc_etc_price*100;
         print str(delta_percent)+"%";
         record.write("delta percent ="+str(delta_percent)+"%\n");
-        if delta_percent > 3.0:
+        if delta_percent > 1.2:
             print "here is a arbitrage opportunity!!!!";
             OP_count = OP_count + 1;
             print "we have observed "+str(OP_count)+" times opportunities"
@@ -108,9 +109,10 @@ def get_overview():
                 try:
                     etc_trading_amount = min(bid_amount, 1.00);
                     btc_trading_amount = etc_trading_amount/chbtc_btc_etc;
+                    btc_trading_amount = Decimal(btc_trading_amount).quantize(Decimal('0.000'));
+                    chbtc_api1.sell_btc_order(chbtc_btc_price, btc_trading_amount);
                     chbtc_api1.buy_etc_order(chbtc_etc_price, etc_trading_amount);
                     sell_etc_btc(bid_price, etc_trading_amount);
-                    chbtc_api1.sell_btc_order(chbtc_btc_price, btc_trading_amount);
                     record.write("selling {} etc in {} price in poloniex \n".format(etc_trading_amount, bid_price));
                     record.write("selling {} btc in {} price in chbtc \n".format(btc_trading_amount, chbtc_btc_price));
                     record.write("buying {} etc in {} price in chbtc \n".format(etc_trading_amount, chbtc_etc_price));
@@ -122,6 +124,7 @@ def get_overview():
                 try:
                     etc_trading_amount = min(ask_amount, 1.00);
                     btc_trading_amount = etc_trading_amount / chbtc_btc_etc;
+                    btc_trading_amount = Decimal(btc_trading_amount).quantize(Decimal('0.000'));
                     chbtc_api1.sell_etc_order(chbtc_etc_price, etc_trading_amount);
                     buy_etc_btc(ask_price, etc_trading_amount);
                     chbtc_api1.buy_btc_order(chbtc_btc_price, btc_trading_amount);
