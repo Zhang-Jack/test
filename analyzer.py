@@ -109,12 +109,15 @@ def get_overview():
                 """we need to sell out btc and buy etc in chbtc 
                    then sell out etc and buy btc in poloniex """
                 try:
-                    
-                    etc_trading_amount = min(bid_amount, 1.00);
+                    chbtc_btc_order_price = float(chbtc_btc_orderBook["bids"][0][0]);
+                    chbtc_btc_order_amount = float(chbtc_btc_orderBook["bids"][0][1]);
+                    chbtc_etc_order_price = float(chbtc_etc_orderBook["asks"][9][0]);
+                    chbtc_etc_order_amount = float(chbtc_etc_orderBook["asks"][9][1]);
+                    etc_trading_amount = min(bid_amount, chbtc_etc_order_amount, chbtc_btc_order_amount*chbtc_btc_etc, 1.00);
                     btc_trading_amount = etc_trading_amount/chbtc_btc_etc;
                     btc_trading_amount = Decimal(btc_trading_amount).quantize(Decimal('0.000'));
-                    chbtc_api1.sell_btc_order(chbtc_btc_price, btc_trading_amount);
-                    chbtc_api1.buy_etc_order(chbtc_etc_price, etc_trading_amount);
+                    chbtc_api1.sell_btc_order(chbtc_btc_order_price, btc_trading_amount);
+                    chbtc_api1.buy_etc_order(chbtc_etc_order_price, etc_trading_amount);
                     sell_etc_btc(bid_price, etc_trading_amount);
                     record.write("selling {} etc in {} price in poloniex \n".format(etc_trading_amount, bid_price));
                     record.write("selling {} btc in {} price in chbtc \n".format(btc_trading_amount, chbtc_btc_price));
@@ -125,12 +128,16 @@ def get_overview():
                 """we need to sell out etc and buy btc in chbtc 
                     then sell out btc and buy etc in poloniex """
                 try:
-                    etc_trading_amount = min(ask_amount, 1.00);
+                    chbtc_btc_order_price = float(chbtc_btc_orderBook["asks"][9][0]);
+                    chbtc_btc_order_amount = float(chbtc_btc_orderBook["asks"][9][1]);
+                    chbtc_etc_order_price = float(chbtc_etc_orderBook["bids"][0][0]);
+                    chbtc_etc_order_amount = float(chbtc_etc_orderBook["bids"][0][1]);
+                    etc_trading_amount = min(bid_amount, chbtc_etc_order_amount, chbtc_btc_order_amount * chbtc_btc_etc, 1.00);
                     btc_trading_amount = etc_trading_amount / chbtc_btc_etc;
                     btc_trading_amount = Decimal(btc_trading_amount).quantize(Decimal('0.000'));
-                    chbtc_api1.sell_etc_order(chbtc_etc_price, etc_trading_amount);
+                    chbtc_api1.sell_etc_order(chbtc_etc_order_price, etc_trading_amount);
                     buy_etc_btc(ask_price, etc_trading_amount);
-                    chbtc_api1.buy_btc_order(chbtc_btc_price, btc_trading_amount);
+                    chbtc_api1.buy_btc_order(chbtc_btc_order_price, btc_trading_amount);
                     record.write("buying {} etc in {} price in poloniex \n".format(etc_trading_amount, ask_price));
                     record.write("buying {} btc in {} price in chbtc \n".format(btc_trading_amount, chbtc_btc_price));
                     record.write("selling {} etc in {} price in chbtc \n".format(etc_trading_amount, chbtc_etc_price));
