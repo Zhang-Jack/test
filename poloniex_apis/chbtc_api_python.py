@@ -209,9 +209,9 @@ class chbtc_api:
             print >> sys.stderr, 'chbtc query_market exception,', ex
             return "error"
 
-    def query_depth(self):
+    def query_depth(self, currency):
         try:
-            url = "http://api.chbtc.com/data/v1/depth?currency=eth_cny&size=5&merge="
+            url = "http://api.chbtc.com/data/v1/depth?currency="+currency+"&size=10&merge="
             request = urllib2.Request(url)
             response = urllib2.urlopen(request, timeout=10)
             obj = json.loads(response.read())

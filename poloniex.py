@@ -49,6 +49,14 @@ def main():
             'function': analyzer.buyCHBTCBTC,
             'help': 'Private function: Try to buy BTC in CHBTC'
         }),
+        ("get_CHBTCBTC_orders", {
+            'function': analyzer.getCHBTCBTCorders,
+            'help': 'Private function: Try to get BTC orders in CHBTC'
+        }),
+        ("get_CHBTCETC_orders", {
+            'function': analyzer.getCHBTCETCorders,
+            'help': 'Private function: Try to get ETC orders in CHBTC'
+        }),
     ])
 
     parser = argparse.ArgumentParser(

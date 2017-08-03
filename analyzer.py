@@ -54,6 +54,7 @@ def get_overview():
     chbtc_api1 = chbtc_api(get_chbtc_api_key(),  get_chbtc_api_secret());
     """chbtc_api1.query_account();"""
     chbtc_etc_market = chbtc_api1.query_market("etc_cny");
+    chbtc_etc_orderBook = chbtc_api1.query_depth("etc_cny");
     print chbtc_etc_market;
     if chbtc_etc_market == "error":
         chbtc_etc_price = last_etc_price;
@@ -76,6 +77,7 @@ def get_overview():
     """print chbtc_etc_price;"""
 
     chbtc_btc_market = chbtc_api1.query_market("btc_cny");
+    chbtc_btc_orderBook = chbtc_api1.query_depth("btc_cny");
     print chbtc_btc_market;
     if chbtc_btc_market == "error":
         chbtc_btc_price = last_btc_price;
@@ -99,7 +101,7 @@ def get_overview():
         delta_percent = delta/btc_etc_price*100;
         print str(delta_percent)+"%";
         record.write("delta percent ="+str(delta_percent)+"%\n");
-        if delta_percent > 1.2:
+        if delta_percent > 2.0:
             print "here is a arbitrage opportunity!!!!";
             OP_count = OP_count + 1;
             print "we have observed "+str(OP_count)+" times opportunities"
@@ -107,6 +109,7 @@ def get_overview():
                 """we need to sell out btc and buy etc in chbtc 
                    then sell out etc and buy btc in poloniex """
                 try:
+                    
                     etc_trading_amount = min(bid_amount, 1.00);
                     btc_trading_amount = etc_trading_amount/chbtc_btc_etc;
                     btc_trading_amount = Decimal(btc_trading_amount).quantize(Decimal('0.000'));
@@ -258,6 +261,15 @@ def buyCHBTCBTC():
         """TODO: need to sync amount from different exchanges"""
         chbtc_api_trading.buy_btc_order(str(chbtc_btc_price), str(0.01));
 
+def getCHBTCBTCorders():
+    chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
+    chbtc_btc_market = chbtc_api_trading.query_depth("btc_cny");
+    print chbtc_btc_market;
+
+def getCHBTCETCorders():
+    chbtc_api_trading = chbtc_api(get_chbtc_api_key(), get_chbtc_api_secret());
+    chbtc_etc_market = chbtc_api_trading.query_depth("etc_cny");
+    print chbtc_etc_market;
 
 def get_detailed_overview():
     ticker_price = TickerPrice(public_api.return_ticker())
