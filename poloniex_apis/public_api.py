@@ -14,12 +14,20 @@ def return_usd_btc():
     ticker = return_ticker()
     return float(ticker["USDT_BTC"]["last"])
 
+def return_usd_bcc():
+    ticker = return_ticker()
+    return float(ticker["USDT_BCH"]["last"])
+
 def return_btc_etc():
     ticker = return_ticker()
     return float(ticker["BTC_ETC"]["last"])
 
 def return_orderbook_usd_etc():
     orderBook = returnOrderBook("BTC_ETC")
+    return orderBook
+
+def return_orderbook_usdt_bcc():
+    orderBook = returnOrderBook("USDT_BCH")
     return orderBook
 
 def return_ticker():
@@ -46,7 +54,7 @@ def return_chart_data(period, currency_pair, start, end=9999999999):
     return _call_public_api(url)
 
 
-def returnOrderBook (currencyPair="BTC_ETC", depth=10):
+def returnOrderBook (currencyPair="USDT_BCH", depth=10):
     url = "{}?command=returnOrderBook&currencyPair={}&depth={}".format(api_url, currencyPair, depth)
     return _call_public_api(url)
 

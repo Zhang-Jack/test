@@ -36,6 +36,30 @@ def return_complete_balances():
     body = _build_body(command="returnCompleteBalances")
     return _call_trading_api(body)
 
+def sell_usdt_bcc(rate, amount):
+    parameters = {
+        'currencyPair': 'USDT_BCH',
+        'rate':rate,
+        'amount':amount,
+    }
+    body = _build_body(
+        command="sell",
+        parameters=parameters
+    )
+    return _call_trading_api(body)
+
+def buy_usdt_bcc(rate, amount):
+    parameters = {
+        'currencyPair': 'USDT_BCH',
+        'rate':rate,
+        'amount':amount,
+    }
+    body = _build_body(
+        command="buy",
+        parameters=parameters
+    )
+    return _call_trading_api(body)
+
 def sell_etc_btc(rate, amount):
     parameters = {
         'currencyPair': 'BTC_ETC',
@@ -84,6 +108,19 @@ def return_trade_history():
     )
     return _call_trading_api(body)
 
+def withdraw(currency, amount, address):
+    parameters = {
+        'currency': currency,
+        'amount': amount,
+        'address': address
+    }
+    body = _build_body(
+        command="withdraw",
+        parameters=parameters
+    )
+    return _call_trading_api(body)
+
+    
 
 def _sign_header(post_body):
     hashed = hmac.new(get_api_secret(), post_body, hashlib.sha512)
@@ -149,3 +186,6 @@ def _build_body(command, parameters=None):
             body += "&{}={}".format(key, value)
     print "body ={}".format(body);
     return body
+
+
+

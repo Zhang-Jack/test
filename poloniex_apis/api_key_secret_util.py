@@ -40,3 +40,12 @@ def get_chbtc_api_secret():
     secret = config.get("ApiKeys", "secret")
     return secret
 
+def get_zb_bch_address():
+    """
+    Returns a Poloniex API secret from the config file
+    """
+    config = ConfigParser.ConfigParser()
+    config.read("chbtc_api_keys.ini")
+    secret = config.get("address", "bch")
+    return secret
+

@@ -57,6 +57,18 @@ def main():
             'function': analyzer.getCHBTCETCorders,
             'help': 'Private function: Try to get ETC orders in CHBTC'
         }),
+        ("get_poloniex_status", {
+            'function': analyzer.get_poloniex_withdraw_status,
+            'help': 'Private function: Try to get withdraw status in poloniex'
+        }),
+        ("get_zb_status", {
+            'function': analyzer.get_zb_status,
+            'help': 'Private function: Try to get withdraw status in zb'
+        }),
+        ("get_zb_balance", {
+            'function': analyzer.get_zb_balance,
+            'help': 'Private function: Try to get bcc balance in zb'
+        }),
     ])
 
     parser = argparse.ArgumentParser(
